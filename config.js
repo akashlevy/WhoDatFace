@@ -4,9 +4,9 @@
 
 module.exports = {
     port: 3000,
-    client_id: 'YOUR_APP_ID',
-    client_secret: 'YOUR_APP_SECRET',
+    client_id: '1137378212962676',
+    client_secret: 'c5563601a40daedf86e8b429fb36ffb3',
     scope: 'publish_actions',
-    cookies: 'datr=YOUR_COOKIE; lu=YOUR_COOKIE; ...; act=YOUR_COOKIE; presence=YOUR_COOKIE', // put all of your cookies here
-    req_params: '__user=...&...' // read README.md
+    cookies: 'datr=zE-xVvWP5Ctu3DRF9Xqsy-xw; pl=y; lu=gQ-_oxgItJx6ff7nfSHMhiCw; a11y=%7B%22sr%22%3A0%2C%22sr-ts%22%3A1454645254077%2C%22jk%22%3A0%2C%22jk-ts%22%3A1454645254077%2C%22kb%22%3A0%2C%22kb-ts%22%3A1459394593149%2C%22hcm%22%3A0%2C%22hcm-ts%22%3A1454645254077%7D; c_user=1685315079; fr=0YPUkPQ4SPe1tURr1.AWUBi9i84zE6yEhsaUEOCnTuhdg.BWsU_S.SI.Fbx.0.AWX-3sIE; xs=26%3Ahhwwz3PIpeFQSA%3A2%3A1457313029%3A3728; csm=2; s=Aa7Bg86IlrHCewVk.BW_0B5; act=1459569248031%2F0; p=-2; presence=EDvF3EtimeF1459569269EuserFA21685315079A2EstateFDt2F_5bDiFA2thread_3a1051805224866052A2EsiFA21051805224866052A2ErF1C_5dElm2FA2thread_3a1051805224866052A2Euct2F1459560062003EtrFA2loadA2EtwF1698901773EatF1459569268443G459569269605CEchFDp_5f1685315079F5CC',
+    req_params: '__user=1685315079&__a=1&__dyn=5V5yAW8-aloAwmgDxyIGzGomyrhEK5EK8GAEG8zCC_826m5-9V8CdwIhEyfyUnwgUaqwXhUnkwy3fgjKcQiVWxeUlxi9G7EdV9VVpo9XCz9qCzEkxvxOcx2q5omxK22&__req=1h&__pc=EXP1%3ADEFAULT&fb_dtsg=AQFujTBDFk_Q%3AAQH6pwLdhxnh&ttstamp=2658170117106846668701079581586581725411211976100104120110104&__rev=2263582'
 };

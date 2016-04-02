@@ -12,7 +12,7 @@ module.exports = function(req, res) {
   if (!req.query.code) {
     var authUrl = graph.getOauthUrl({
       client_id: config.client_id,
-      redirect_uri: 'http://localhost:' + config.port + '/getAccessToken',
+      redirect_uri: 'http://local.host:' + config.port + '/getAccessToken',
       scope: config.scope
     });
 
@@ -24,7 +24,7 @@ module.exports = function(req, res) {
   // code is set, let's get that access token
   graph.authorize({
     client_id:      config.client_id,
-    redirect_uri:   'http://localhost:' + config.port + '/getAccessToken',
+    redirect_uri:   'http://local.host:' + config.port + '/getAccessToken',
     client_secret:  config.client_secret,
     code:           req.query.code
   }, function (err, facebookRes) {

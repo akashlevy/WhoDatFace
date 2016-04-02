@@ -8,7 +8,7 @@ var recognize = require('../lib/recognize'),
 module.exports = function(req, res) {
 
   // vars
-  var imgUrl = req.body.url,
+  var source = req.body.source,
       accessToken = req.body.accessToken;
 
   // set access_token to upload image
@@ -16,13 +16,13 @@ module.exports = function(req, res) {
 
   // upload image
   var params = {
-    url: imgUrl, 
-    message:'temp', 
+    source: source,
+    message: 'temp',
     privacy: { value: 'SELF' } // we don't want other people to see it
   };
 
   graph.post('/me/photos', params, function(err, r) {
-    
+
     // we have the imgId! now we can ask Facebook to recognize my friends
     var imgId = r.id;
 
