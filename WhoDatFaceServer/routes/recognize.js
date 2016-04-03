@@ -1,36 +1,13 @@
-var recognize = require('../lib/recognize'),
-    graph = require('fbgraph');
-
-/*!
- * Calls the recognize function
- */
-
+var recognize = require('../lib/recognize'), graph = require('fbgraph');
 module.exports = function(req, res) {
-
-  // vars
-  var source = req.body.source,
-      accessToken = req.body.accessToken;
-
-  // set access_token to upload image
-  graph.setAccessToken(accessToken);
-
-  // upload image
+  graph.setAccessToken(req.body.accessToken);
+  
   var params = {
-    source: source, // fs.createReadStream(imageFile.path)
-    message: 'temp',
-    privacy: { value: 'SELF' } // we don't want other people to see it
+    source: req.body.source,
+    privacy: { value: 'SELF' }
   };
 
   graph.post('/me/photos', params, function(err, r) {
-
-    // we have the imgId! now we can ask Facebook to recognize my friends
-    var imgId = r.id;
-
-    // wait 3 seconds before asking Facebook (they recognize asynchronously)
-    setTimeout(function() {
-      recognize(imgId, function(result) {
-        res.send(result);
-      })
-    }, 3000)
+    recognize(r.id, function(result) { res.send(result); })
   });
 };

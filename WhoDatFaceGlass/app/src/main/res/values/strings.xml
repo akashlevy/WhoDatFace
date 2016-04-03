@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">WhoDatFaceGlass</string>
     <string name="title_activity_who_dat">WhoDatFace?</string>
-    <string name="app_id">1137378212962676</string>
+    <string name="access_token"></string>
 </resources>

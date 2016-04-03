@@ -12,16 +12,21 @@ import android.hardware.Camera.PictureCallback;
 import android.content.Context;
 import android.media.AudioManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 
-import com.sromku.simple.fb.*;
-import com.sromku.simple.fb.entities.*;
-import com.sromku.simple.fb.entities.Privacy.PrivacySettings;
-import com.sromku.simple.fb.listeners.*;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.*;
+import org.apache.http.client.methods.*;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.entity.mime.*;
+import org.apache.http.util.EntityUtils;
+import org.json.*;
 
-import java.util.List;
+import java.io.IOException;
 
 /**
  * An {@link Activity} that recognizes a face and returns corresponding Facebook data
@@ -43,38 +48,15 @@ public class WhoDat extends Activity {
      */
     private Camera camera;
 
-    /**
-     * {@link SimpleFacebook} for making requests to Facebook
-     */
-    private SimpleFacebook fb;
-
-    /**
-     * Permissions ({@link Permission} for uploading photos
-     */
-    private final Permission[] permissions = new Permission[] {
-            Permission.USER_PHOTOS,
-            Permission.PUBLISH_ACTION
-    };
-
     @Override
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
 
         // Set up view
-        mView = buildView();
+        mView = buildView("Tap to recognize!");
 
         // Set up camera
         camera = Camera.open();
-
-        // Set up Facebook
-        SimpleFacebookConfiguration configuration = new SimpleFacebookConfiguration.Builder()
-                .setAppId("1137378212962676")
-                .setNamespace("whodatface")
-                .setPermissions(permissions)
-                .build();
-        SimpleFacebook.setConfiguration(configuration);
-        fb = SimpleFacebook.getInstance(this);
-        fb.login(onLoginListener);
 
         // Set up scroll view
         mCardScroller = new CardScrollView(this);
@@ -108,7 +90,7 @@ public class WhoDat extends Activity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // Take picture
-                camera.takePicture(null, null, uploadToFacebook);
+                camera.takePicture(null, null, uploadToServer);
 
                 // Plays sound to indicate that TAP actions has succeeded
                 AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
@@ -121,7 +103,6 @@ public class WhoDat extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        fb = SimpleFacebook.getInstance(this);
         mCardScroller.activate();
     }
 
@@ -133,75 +114,46 @@ public class WhoDat extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        fb.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
     }
 
     /**
-     * Builds a Glass styled "Hello World!" view using the {@link CardBuilder} class.
+     * Builds a Glass styled "Hello World!" view using the {@link CardBuilder} class
      */
-    private View buildView() {
+    private View buildView(String text) {
         CardBuilder card = new CardBuilder(this, CardBuilder.Layout.TEXT);
-
-        card.setText("Tap to get info!");
+        card.setText(text);
         return card.getView();
     }
 
     /**
-     * Uploads a picture to Facebook and retrieves a recognition response.
+     * Uploads a picture to server and retrieves a recognition response
      */
-    private PictureCallback uploadToFacebook = new PictureCallback() {
-
+    private PictureCallback uploadToServer = new PictureCallback() {
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
-            Photo photo = new Photo.Builder()
-                    .setImage(data)
-                    .setName("WhoDatFace?")
-                    .setPrivacy(new Privacy.Builder()
-                            .setPrivacySettings(PrivacySettings.SELF)
-                            .build())
-                    .build();
-            fb.publish(photo, true, onPublishListener);
-        }
-    };
-
-
-    OnLoginListener onLoginListener = new OnLoginListener() {
-        @Override
-        public void onLogin(String accessToken, List<Permission> acceptedPermissions, List<Permission> declinedPermissions) {
-            // change the state of the button or do whatever you want
-        }
-
-        @Override
-        public void onCancel() {
-            // user canceled the dialog
-        }
-
-        @Override
-        public void onFail(String reason) {
-            // failed to login
-        }
-
-        @Override
-        public void onException(Throwable throwable) {
-            // exception from facebook
-        }
-    };
-
-    OnPublishListener onPublishListener = new OnPublishListener() {
-        @Override
-        public void onComplete(String response) {
-            // change the state of the button or do whatever you want
-        }
-
-        @Override
-        public void onFail(String reason) {
-            // failed to login
-        }
-
-        @Override
-        public void onException(Throwable throwable) {
-            // exception from facebook
+            HttpClient client = new DefaultHttpClient();
+            HttpPost post = new HttpPost("45.33.64.146:3000/recognize");
+            MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create();
+            entityBuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+            entityBuilder.addTextBody("accessToken", "@string/access_token");
+            entityBuilder.addBinaryBody("Content", data);
+            HttpEntity entity = entityBuilder.build();
+            post.setEntity(entity);
+            try {
+                HttpResponse response = client.execute(post);
+                HttpEntity httpEntity = response.getEntity();
+                String result = EntityUtils.toString(httpEntity);
+                // JSONObject json = new JSONObject(result);
+                Log.i("JSON Response", result);
+                mView = buildView(result);
+            }
+            catch (IOException e) {
+                Log.e("IOException", "In post execution");
+            }
+            // catch (JSONException e) {
+            //     Log.e("JSONException", "In response parsing");
+            // }
         }
     };
 }

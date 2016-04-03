@@ -16,7 +16,7 @@ var app = express();
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
-/*! 
+/*!
  * routes
  */
 
@@ -24,7 +24,7 @@ app.get('/getAccessToken', routes.getAccessToken);
 app.post('/recognize', routes.recognize)
 
 /*!
- * let's go!
+ * listen
  */
 
 app.listen(config.port, function() {
