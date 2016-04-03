@@ -16,7 +16,7 @@ module.exports = function(req, res) {
 
   // upload image
   var params = {
-    source: source,
+    source: source, // fs.createReadStream(imageFile.path)
     message: 'temp',
     privacy: { value: 'SELF' } // we don't want other people to see it
   };
